@@ -1,2 +1,2 @@
 #!/bin/bash
-chmod -R 711 0x00-shell_basics 0x01-shell_permissions
+mkdir -m 751 my_dir
