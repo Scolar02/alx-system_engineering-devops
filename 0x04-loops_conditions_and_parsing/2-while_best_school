@@ -1,9 +1,4 @@
-#!/bin/bash
-
-count=1
-
-while [ $count -le 10 ]
-do
-  echo "Best School"
-  count=$((count + 1))
-done
+#!/usr/bin/env bash
+#Prints Holberton School to stdout 10 times with a while loop.
+i=10
+while ((i > 0)); do echo Holberton School; i=$((i-1)); done
