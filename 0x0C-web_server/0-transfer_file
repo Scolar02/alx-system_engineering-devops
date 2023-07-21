@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
-# Transfers a file from our client to a server; accepts 4 parameters
-# Before running this script, we will run this to list server's existing content
+# Transfers a file from our client to a server; accepts 4 parameter
+# We will run the following commands before executing the script
 #  	 ssh ubuntu@35.229.54.225 -i ~/.ssh/holberton 'ls ~/'
 #	 touch newfile.html
 # After running script, we will run this to check new content is transferred to server
