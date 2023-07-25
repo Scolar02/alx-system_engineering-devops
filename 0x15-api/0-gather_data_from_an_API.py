@@ -20,4 +20,4 @@ if __name__ == "__main__":
                 tasks_array.append(tasks.get('title'))
         print("Employee {:s} is done with tasks({:d}/{:d}):\n\t {}".
               format(names.get('name'), task_complete,
-                     len(todo.json()), "\n\t ".join(tasks_aray)))
+                     len(todo.json()), "\n\t ".join(tasks_array)))
