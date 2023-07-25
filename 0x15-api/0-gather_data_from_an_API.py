@@ -3,32 +3,21 @@
 Request from API; Return TODO list given employee ID
 """
 import requests
-from sys import argv
-
-
-def display():
-    """return API data"""
-    users = requests.get("http://jsonplaceholder.typicode.com/users")
-    for u in users.json():
-        if u.get('id') == int(argv[1]):
-            EMPLOYEE_NAME = (u.get('name'))
-            break
-    TOTAL_NUM_OF_TASKS = 0
-    NUMBER_OF_DONE_TASKS = 0
-    TASK_TITLE = []
-    todos = requests.get("http://jsonplaceholder.typicode.com/todos")
-    for t in todos.json():
-        if t.get('userId') == int(argv[1]):
-            TOTAL_NUM_OF_TASKS += 1
-            if t.get('completed') is True:
-                    NUMBER_OF_DONE_TASKS += 1
-                    TASK_TITLE.append(t.get('title'))
-    print("Employee {} is done with tasks({}/{}):".format(EMPLOYEE_NAME,
-                                                          NUMBER_OF_DONE_TASKS,
-                                                          TOTAL_NUM_OF_TASKS))
-    for task in TASK_TITLE:
-        print("\t {}".format(task))
+import sys
 
 
 if __name__ == "__main__":
-    display()
+    root = "https://jsonplaceholder.typicode.com"
+    users = requests.get(root + "/users", params={"id": sys.argv[1]})
+    for names in users.json():
+        usr_id = names.get('id')
+        todo = requests.get(root + "/todos", params={"userId": usr_id})
+        task_complete = 0
+        tasks_array = []
+        for tasks in todo.json():
+            if tasks.get('completed') is True:
+                task_complete += 1
+                tasks_array.append(tasks.get('title'))
+        print("Employee {:s} is done with tasks({:d}/{:d}):\n\t {}".
+              format(names.get('name'), task_complete,
+                     len(todo.json()), "\n\t ".join(tasks_array)))
