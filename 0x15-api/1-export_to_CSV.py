@@ -5,34 +5,45 @@ Export this data to CSV
 """
 import csv
 import requests
-from sys import argv
+import sys
 
 
-def to_csv():
-    """return API data"""
-    users = requests.get("http://jsonplaceholder.typicode.com/users")
-    for u in users.json():
-        if u.get('id') == int(argv[1]):
-            USERNAME = (u.get('username'))
-            break
-    TASK_STATUS_TITLE = []
-    todos = requests.get("http://jsonplaceholder.typicode.com/todos")
-    for t in todos.json():
-        if t.get('userId') == int(argv[1]):
-            TASK_STATUS_TITLE.append((t.get('completed'), t.get('title')))
+def get_employee_todo_progress(employee_id):
+    base_url = 'https://jsonplaceholder.typicode.com'
+    user_url = f'{base_url}/users/{employee_id}'
+    todos_url = f'{base_url}/todos?userId={employee_id}'
 
-    """export to csv"""
-    filename = "{}.csv".format(argv[1])
-    with open(filename, "w") as csvfile:
-        fieldnames = ["USER_ID", "USERNAME",
-                      "TASK_COMPLETED_STATUS", "TASK_TITLE"]
-        writer = csv.DictWriter(csvfile, fieldnames=fieldnames,
-                                quoting=csv.QUOTE_ALL)
-        for task in TASK_STATUS_TITLE:
-            writer.writerow({"USER_ID": argv[1], "USERNAME": USERNAME,
-                             "TASK_COMPLETED_STATUS": task[0],
-                             "TASK_TITLE": task[1]})
+    try:
+        user_response = requests.get(user_url)
+        todos_response = requests.get(todos_url)
+
+        user_data = user_response.json()
+        todos_data = todos_response.json()
+
+        employee_name = user_data['name']
+        file_name = f'{employee_id}.csv'
+
+        with open(file_name, mode='w', newline='') as csv_file:
+            writer = csv.writer(csv_file, quoting=csv.QUOTE_ALL)
+            for todo in todos_data:
+                writer.writerow(
+                    [user_data['id'], user_data['username'], todo['completed'], todo['title']])
+
+        print(
+            f'Employee {employee_name} TODO list progress has been exported to {file_name}.')
+
+    except requests.exceptions.RequestException as e:
+        print(f"Error: {e}")
+        sys.exit(1)
+    except (KeyError, IndexError) as e:
+        print(f"Error: Invalid employee ID or data format. Please check the employee ID.")
+        sys.exit(1)
 
 
 if __name__ == "__main__":
-    to_csv()
+    if len(sys.argv) != 2:
+        print("Usage: python3 export_to_CSV.py employee_id")
+        sys.exit(1)
+
+    employee_id = int(sys.argv[1])
+    get_employee_todo_progress(employee_id)
