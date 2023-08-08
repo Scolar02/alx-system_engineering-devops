@@ -9,15 +9,15 @@ import sys
 
 
 if __name__ == "__main__":
-    root = "https://jsonplaceholder.typicode.com"
+    url = 'https://jsonplaceholder.typicode.com/'
 
-        userid = sys.argv[1]
-    user = '{}users/{}'.format(root, userid)
+    userid = sys.argv[1]
+    user = '{}users/{}'.format(url, userid)
     res = requests.get(user)
     json_o = res.json()
     name = json_o.get('username')
 
-    todos = '{}todos?userId={}'.format(root, userid)
+    todos = '{}todos?userId={}'.format(url, userid)
     res = requests.get(todos)
     tasks = res.json()
     l_task = []
