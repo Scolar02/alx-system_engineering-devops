@@ -6,26 +6,37 @@ import requests
 import sys
 
 
-def recurse(subreddit, hot_list=[], after="tmp"):
-    """
-        return all hot articles for a given subreddit
-        return None if invalid subreddit given
-    """
+def add_title(hot_list, hot_posts):
+    """ Adds item into a list """
+    if len(hot_posts) == 0:
+        return
+    hot_list.append(hot_posts[0]['data']['title'])
+    hot_posts.pop(0)
+    add_title(hot_list, hot_posts)
+
+
+def recurse(subreddit, hot_list=[], after=None):
+
     headers = requests.utils.default_headers()
     headers.update({'User-Agent': 'My User Agent 1.0'})
 
+    params = {
+        'after': after
+    }
+
     url = "https://www.reddit.com/r/{}/hot.json".format(subreddit)
-    if after != "tmp":
-        url = url + "?after={}".format(after)
-    r = requests.get(url, headers=headers, allow_redirects=False)
+    res = requests.get(url,
+                       headers=headers,
+                       params=params,
+                       allow_redirects=False)
 
-    results = r.json().get('data', {}).get('children', [])
-    if not results:
-        return hot_list
-    for e in results:
-        hot_list.append(e.get('data').get('title'))
+    if res.status_code != 200:
+        return None
 
-    after = r.json().get('data').get('after')
+    dic = res.json()
+    hot_posts = dic['data']['children']
+    add_title(hot_list, hot_posts)
+    after = dic['data']['after']
     if not after:
         return hot_list
-    return (recurse(subreddit, hot_list, after))
+    return recurse(subreddit, hot_list=hot_list, after=after)
