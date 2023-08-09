@@ -1,6 +1,6 @@
 #!/usr/bin/python3
 """
-queries the Reddit API; prints the titles of the first 10 hot posts for a subreddit
+queries the Reddit API; prints the titles of the first 10 hot posts
 """
 import requests
 
