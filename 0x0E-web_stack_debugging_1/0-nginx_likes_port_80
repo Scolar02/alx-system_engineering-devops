@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-# Script that sets up a port
+# sets up a port
 
 NGINX_CONFIG="/etc/nginx/sites-enabled/default"
 
